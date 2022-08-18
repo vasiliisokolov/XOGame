@@ -2,14 +2,16 @@
 
 bool check_format(std::string);
 char won_in_line(std::string);
-std::string get_column(std::string, std::string, std::string, int);
-char search_one_element(std::string, std::string, std::string, int, int);
-int search_won(std::string, std::string, std::string);
+std::string get_column(std::string&, std::string&, std::string&, int);
+char search_one_element(std::string&, std::string&, std::string&, int, int);
+int search_won(std::string&, std::string&, std::string&);
+std::string get_diagonal(std::string&, std::string&, std::string&, int);
 
 int main()
 {
     std::string line0, line1, line2;
     std::string column0, column1, column2;
+    bool valid = true;
     std::cout << "Lets play Noughts and Crosses!\n";
     while (check_format(line0) || check_format(line1) || check_format(line2))
     {
@@ -18,6 +20,10 @@ int main()
         std::cin >> line1;
         std::cin >> line2;
     }
+    std::cout << search_won(line0, line1, line2) << std::endl;
+
+    if (search_won(line0, line1, line2) > 1) valid = false;
+
     
     column0 = get_column(line0, line1, line2, 0);
     column1 = get_column(line0, line1, line2, 1);
@@ -30,6 +36,7 @@ int main()
     //std::cout << "column0: " << won_in_line(column0) << std::endl;
     //std::cout << "column1: " << won_in_line(column1) << std::endl;
     //std::cout << "column2: " << won_in_line(column2) << std::endl;
+    std::cout << (valid ? "Valid\n" : "Invalid\n");
 }
 
 bool check_format(std::string line)
@@ -86,7 +93,7 @@ char won_in_line(std::string line)
     else return 'N';
 }
 
-std::string get_column(std::string line0, std::string line1, std::string line2, int columnNumber)
+std::string get_column(std::string &line0, std::string &line1, std::string &line2, int columnNumber)
 {
     std::string result = "";
     result += line0[columnNumber];
@@ -95,10 +102,10 @@ std::string get_column(std::string line0, std::string line1, std::string line2, 
     return result;
 }
 
-char search_one_element(std::string line0, std::string line1, std::string line2, int x, int y)
+char search_one_element(std::string &line0, std::string &line1, std::string &line2, int x, int y)
 {
     std::string line;
-    switch (x)
+    switch (y)
     {
     case 0:
         line = line0;
@@ -111,7 +118,7 @@ char search_one_element(std::string line0, std::string line1, std::string line2,
         break;
     }
     char result{};
-    switch (y)
+    switch (x)
     {
     case 0:
         result = line[0];
@@ -126,39 +133,74 @@ char search_one_element(std::string line0, std::string line1, std::string line2,
     return result;
 }
 
-int search_won(std::string line0, std::string line1, std::string line2)
+int search_won(std::string &line0, std::string &line1, std::string &line2)
 {
     int count = 0;
     int lineNumer = 0;
     std::string line;
     
-    for (int lineNumer = 0; lineNumer < 7; lineNumer++)
+    for (int lineNumer = 0; lineNumer < 8; lineNumer++)
     {
         switch (lineNumer)
         {
         case 0:
             line = line0;
-            break;
+                break;
         case 1:
             line = line1;
-            break;
+                break;
         case 2:
             line = line2;
-            break;
+                break;
         case 3:
             line = get_column(line0, line1, line2, 0);
-            break;
+                break;
         case 4:
             line = get_column(line0, line1, line2, 1);
-            break;
+                break;
         case 5:
             line = get_column(line0, line1, line2, 2);
-            break;
+                break;
+        case 6:
+            line = get_diagonal(line0, line1, line2, 0);
+                break;
+        case 7:
+            line = get_diagonal(line0, line1, line2, 1);
+                break;
         }
-        if (won_in_line(line) != 'N' || won_in_line(line) != '.')
+        if (won_in_line(line) == 'X' || won_in_line(line) == 'O')
         {
             count++;
         }
     }
     return count;
+}
+
+std::string get_diagonal(std::string &line0, std::string &line1, std::string &line2, int diagonalNumber)
+{
+    std::string line = "";
+    int x, y;
+    if (diagonalNumber == 0)
+    {
+        x = 0;
+        for (y = 0; y < 3; y++)
+        {
+
+            line += search_one_element(line0, line1, line2, x, y);
+            x++;
+        }
+
+    }
+    else if (diagonalNumber == 1)
+    {
+        x = 2;
+        for (y = 0; y < 3; y++)
+        {
+
+            line += search_one_element(line0, line1, line2, x, y);
+            x--;
+        }
+    }
+    
+    return line;
 }
