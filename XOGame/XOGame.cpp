@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <tuple>
 
 bool check_format(std::string);
 char won_in_line(std::string);
@@ -6,11 +7,13 @@ std::string get_column(std::string&, std::string&, std::string&, int);
 char search_one_element(std::string&, std::string&, std::string&, int, int);
 int search_won(std::string&, std::string&, std::string&);
 std::string get_diagonal(std::string&, std::string&, std::string&, int);
+std::tuple <int, int, int> char_counter(std::string&, std::string&, std::string&);
 
 int main()
 {
     std::string line0, line1, line2;
     std::string column0, column1, column2;
+    int punktCounter, xCounter, oCounter;
     bool valid = true;
     std::cout << "Lets play Noughts and Crosses!\n";
     while (check_format(line0) || check_format(line1) || check_format(line2))
@@ -23,7 +26,10 @@ int main()
     std::cout << search_won(line0, line1, line2) << std::endl;
 
     if (search_won(line0, line1, line2) > 1) valid = false;
-
+    std::tie(punktCounter, xCounter, oCounter) = char_counter(line0, line1, line2);
+    std::cout << punktCounter << std::endl;
+    std::cout << xCounter << std::endl;
+    std::cout << oCounter << std::endl;
     
     column0 = get_column(line0, line1, line2, 0);
     column1 = get_column(line0, line1, line2, 1);
@@ -203,4 +209,32 @@ std::string get_diagonal(std::string &line0, std::string &line1, std::string &li
     }
     
     return line;
+}
+std::tuple <int, int, int> char_counter(std::string &line0, std::string &line1, std::string &line2)
+{
+    int punktCounter = 0, xCounter = 0, oCounter = 0;
+    std::string line;
+    
+    for (int lineNumber = 0; lineNumber < 3; lineNumber++)
+    {
+        switch (lineNumber)
+        {
+        case 0:
+            line = line0;
+            break;
+        case 1:
+            line = line1;
+            break;
+        case 2:
+            line = line2;
+            break;
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            if (line[i] == 'X') xCounter++;
+            else if (line[i] == 'O') oCounter++;
+            else if (line[i] == '.') punktCounter++;
+        }
+    }
+    return std::make_tuple(punktCounter, xCounter, oCounter);
 }
