@@ -1,48 +1,68 @@
 ﻿#include <iostream>
 #include <tuple>
 
+void incorrect();
 bool check_format(std::string);
 char won_in_line(std::string);
 std::string get_column(std::string&, std::string&, std::string&, int);
 char search_one_element(std::string&, std::string&, std::string&, int, int);
-int search_won(std::string&, std::string&, std::string&);
+std::pair<int,char> search_won(std::string&, std::string&, std::string&);
 std::string get_diagonal(std::string&, std::string&, std::string&, int);
 std::tuple <int, int, int> char_counter(std::string&, std::string&, std::string&);
+
 
 int main()
 {
     std::string line0, line1, line2;
-    std::string column0, column1, column2;
     int punktCounter, xCounter, oCounter;
     bool valid = true;
     std::cout << "Lets play Noughts and Crosses!\n";
-    while (check_format(line0) || check_format(line1) || check_format(line2))
+    std::cout << "Enter 3x3 square (only X, O and .):\n";
+    std::cin >> line0;
+    std::cin >> line1;
+    std::cin >> line2;
+
+    while (!check_format(line0) && !check_format(line1) && !check_format(line2))
     {
-        std::cout << "Enter 3x3 square:\n";
+        incorrect();
+        std::cout << "Enter 3x3 square (only X, O and .):\n";
         std::cin >> line0;
         std::cin >> line1;
         std::cin >> line2;
     }
-    std::cout << search_won(line0, line1, line2) << std::endl;
-
-    if (search_won(line0, line1, line2) > 1) valid = false;
+    std::pair<int, char> winner = search_won(line0, line1, line2);
     std::tie(punktCounter, xCounter, oCounter) = char_counter(line0, line1, line2);
-    std::cout << punktCounter << std::endl;
-    std::cout << xCounter << std::endl;
-    std::cout << oCounter << std::endl;
+
+    if (winner.first == 0)
+    {
+        
+        std::cout << "Nobody!" << std::endl;
+    }
+    else if (winner.first > 1)
+    {
+        incorrect();
+    }
+    else
+        if (winner.second == 'O' && xCounter > oCounter)
+        {
+            incorrect();
+        }
+        else if (winner.second == 'X' && xCounter <= oCounter)
+        {
+            incorrect();
+        }
+        else if (winner.second == 'X')
+        {
+            std::cout << "Petya won!" << std::endl;
+        }
+        else
+        {
+            std::cout << "Vanya won!" << std::endl;
+        }
+        
+    }
     
-    column0 = get_column(line0, line1, line2, 0);
-    column1 = get_column(line0, line1, line2, 1);
-    column2 = get_column(line0, line1, line2, 2);
 
-
-    //std::cout << "Line0: " << won_in_line(line0) << std::endl;
-    //std::cout << "Line1: " << won_in_line(line1) << std::endl;
-    //std::cout << "Line2: " << won_in_line(line2) << std::endl;
-    //std::cout << "column0: " << won_in_line(column0) << std::endl;
-    //std::cout << "column1: " << won_in_line(column1) << std::endl;
-    //std::cout << "column2: " << won_in_line(column2) << std::endl;
-    std::cout << (valid ? "Valid\n" : "Invalid\n");
 }
 
 bool check_format(std::string line)
@@ -55,7 +75,7 @@ bool check_format(std::string line)
     {
         for (int i = 0; i < line.length(); i++)
         {
-            if (line[i] != 'X' || line[i] != 'O' || line[i] != '.')
+            if (line[i] != 'X' && line[i] != 'O' && line[i] != '.')
             {
                 return false;
             }
@@ -139,11 +159,12 @@ char search_one_element(std::string &line0, std::string &line1, std::string &lin
     return result;
 }
 
-int search_won(std::string &line0, std::string &line1, std::string &line2)
+std::pair<int, char> search_won(std::string &line0, std::string &line1, std::string &line2)
 {
     int count = 0;
     int lineNumer = 0;
     std::string line;
+    char won;
     
     for (int lineNumer = 0; lineNumer < 8; lineNumer++)
     {
@@ -177,9 +198,11 @@ int search_won(std::string &line0, std::string &line1, std::string &line2)
         if (won_in_line(line) == 'X' || won_in_line(line) == 'O')
         {
             count++;
+            won = won_in_line(line);
         }
+        
     }
-    return count;
+    return std::make_pair(count, won);
 }
 
 std::string get_diagonal(std::string &line0, std::string &line1, std::string &line2, int diagonalNumber)
@@ -237,4 +260,8 @@ std::tuple <int, int, int> char_counter(std::string &line0, std::string &line1, 
         }
     }
     return std::make_tuple(punktCounter, xCounter, oCounter);
+}
+void incorrect()
+{
+    std::cout << "Incorrect!" << std::endl;
 }
