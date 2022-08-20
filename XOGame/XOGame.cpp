@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 #include <tuple>
 
-void incorrect();
+
 bool check_format(std::string);
 char won_in_line(std::string);
 std::string get_column(std::string&, std::string&, std::string&, int);
@@ -9,13 +9,12 @@ char search_one_element(std::string&, std::string&, std::string&, int, int);
 std::pair<int,char> search_won(std::string&, std::string&, std::string&);
 std::string get_diagonal(std::string&, std::string&, std::string&, int);
 std::tuple <int, int, int> char_counter(std::string&, std::string&, std::string&);
-
+void incorrect();
 
 int main()
 {
     std::string line0, line1, line2;
     int punktCounter, xCounter, oCounter;
-    bool valid = true;
     std::cout << "Lets play Noughts and Crosses!\n";
     std::cout << "Enter 3x3 square (only X, O and .):\n";
     std::cin >> line0;
@@ -35,33 +34,28 @@ int main()
 
     if (winner.first == 0)
     {
-        
         std::cout << "Nobody!" << std::endl;
     }
     else if (winner.first > 1)
     {
         incorrect();
     }
-    else
-        if (winner.second == 'O' && xCounter > oCounter)
-        {
-            incorrect();
-        }
-        else if (winner.second == 'X' && xCounter <= oCounter)
-        {
-            incorrect();
-        }
-        else if (winner.second == 'X')
-        {
-            std::cout << "Petya won!" << std::endl;
-        }
-        else
-        {
-            std::cout << "Vanya won!" << std::endl;
-        }
-        
+    else if (winner.second == 'O' && xCounter > oCounter)
+    {
+        incorrect();
     }
-    
+    else if (winner.second == 'X' && xCounter <= oCounter)
+    {
+        incorrect();
+    }
+    else if (winner.second == 'X')
+    {
+        std::cout << "Petya won!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Vanya won!" << std::endl;
+    }  
 
 }
 
@@ -263,5 +257,5 @@ std::tuple <int, int, int> char_counter(std::string &line0, std::string &line1, 
 }
 void incorrect()
 {
-    std::cout << "Incorrect!" << std::endl;
+   std::cout << "Incorrect!" << std::endl;
 }
